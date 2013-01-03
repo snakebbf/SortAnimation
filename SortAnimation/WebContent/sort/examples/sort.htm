@@ -1,0 +1,956 @@
+<!DOCTYPE HTML>
+<html>
+     <head>
+          <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+          <title>Sort Example</title>
+        
+        
+          <!-- 1. Add these JavaScript inclusions in the head of your page -->
+          <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+          <script type="text/javascript" src="../js/highcharts.js"></script>
+        
+          <!-- 1a) Optional: add a theme file -->
+          <!--
+               <script type="text/javascript" src="../js/themes/gray.js"></script>
+          -->
+        
+          <!-- 1b) Optional: the exporting module -->
+          <script type="text/javascript" src="../js/modules/exporting.js"></script>
+          <script src="../js/windjs/wind-core-0.7.0.js"></script>
+          <script src="../js/windjs/wind-compiler-0.7.0.js"></script>
+          <script src="../js/windjs/wind-builderbase-0.7.0.js"></script>
+          <script src="../js/windjs/wind-async-0.7.0.js"></script>
+        
+          <!-- 2. Add the JavaScript to initialize the chart on document ready -->
+          <script type="text/javascript">
+
+        
+     var colorList = [
+          '#4572A7',  //蓝 未排序
+          '#AA4643', //红 已排序
+          '#89A54E',  //绿 要排序元素
+          '#80699B'  //紫 临时序列
+     ];
+   
+     var tempColorList = [
+          '#3D96AE',
+          '#DB843D',
+          '#92A8CD',
+          '#A47D7C',
+          '#B5CA92'
+     ]
+        
+          var createDataList = function(){                       
+                    var dataList = [{
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 17
+                    },{
+                         name: 'Point 1',
+                         color: '#4572A7',
+                         y: 18
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 32
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 24
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 6
+                    },{
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 34
+                    },{
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 2
+                    },{
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 23
+                    },{
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 22
+                    } ,{
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 13
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 5
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 7
+                    },{
+                         name: 'Point 1',
+                         color: '#4572A7',
+                         y: 1
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 21
+                    },  {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 10
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 11
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 25
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 26
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 16
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 12
+                    },{
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 14
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 27
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 28
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 29
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 15
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 33
+                    } , {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 4
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 30
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 19
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 31
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 20
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 3
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 9
+                    }, {
+                         name: 'Point 2',
+                         color: '#4572A7',
+                         y: 8
+                    }
+                    ]
+                   return dataList;   
+               }
+               $(document).ready(function() {
+             
+                    var createChart = function(list,sortType){
+                    return new Highcharts.Chart({
+                         chart: {
+                              renderTo: 'container',
+                              defaultSeriesType: 'column',
+                              margin: [ 50, 50, 100, 80],
+                              animation: false
+                         },
+                         title: {
+                              text: sortType
+                         },
+                         xAxis: {
+                              categories: [
+                                   '0',
+                                   '1',
+                                   '2',
+                                   '3',
+                                   '4',
+                                   '5',
+                                   '6',
+                                   '7',
+                                   '8',
+                                   '9',
+                                   '10',
+                                   '11',
+                                   '12',
+                                   '13',
+                                   '14',
+                                   '15',
+                                   '16',
+                                   '17',
+                                   '18',
+                                   '19',
+                                   '20',
+                                   '21',
+                                   '22',
+                                   '23',
+                                   '24',
+                                   '25',
+                                   '26',
+                                   '27',
+                                   '28',
+                                   '29',
+                                   '30',
+                                   '31',
+                                   '32',
+                                   '33',
+                                   '34',
+                                   '35',
+                                   '36',
+                                   '37',
+                                   '38',
+                                   '39'
+                              ],
+                              labels: {
+                                   rotation: -45,
+                                   align: 'right',
+                                   style: {
+                                        font: 'normal 13px Verdana, sans-serif'
+                                   }
+                              }
+                         },
+                         yAxis: {
+                              min: 0,
+                              title: {
+                                   text: '数值'
+                              }
+                         },
+                         legend: {
+                              enabled: false
+                         },
+                         tooltip: {
+                              formatter: function() {
+                                   return '<b>元素:'+ this.x +'</b><br/>'+
+                                        '数值:'+ Highcharts.numberFormat(this.y, 1);
+                              }
+                         },  plotOptions: {
+                              series: {
+                                   animation: false
+                              }
+                         },
+                       
+                            series: [{
+                              name: '数组',
+                              data: list,
+                              dataLabels: {
+                                   enabled: true,
+                                   rotation: -90,
+                                   color: '#FFFFFF',
+                                   align: 'right',
+                                   x: -3,
+                                   y: 10,
+                                   formatter: function() {
+                                        return this.y;
+                                   },
+                                   style: {
+                                        font: 'normal 8px Verdana, sans-serif'
+                                   }
+                              }             
+                         }]
+                    });
+                  
+               }
+             
+               var updateChartPoint = function(chart,data,pos){
+                    chart.series[0].data[pos].update(data);
+               }
+             
+               //alert(chart.series[0].data[0].color);
+               var compareAsync = eval(Wind.compile("async", function (x, y,time) {
+                    $await(Wind.Async.sleep(time)); // ms
+                    return x - y;
+               }));
+
+               var swapAsync = eval(Wind.compile("async", function (a, i, j,time) {
+                    $await(Wind.Async.sleep(time)); // ms
+                    var t = a[i].y; a[i].y = a[j].y; a[j].y = t;
+               }));
+
+               //冒泡排序
+               var bubbleSortAsync = eval(Wind.compile("async", function (chart,array,begin,end) {
+                         if(end-begin<0){
+                              return;
+                         }
+                         //冒泡排序
+                    for (var i = begin; i <= end; i++) {
+                        for (var j = begin; j < end+begin- i; j++) {
+                                   //设置当前比较元素的颜色 将j+1设置为红色,j还原位蓝色
+                                   array[j].color = '#4572A7';
+                                   array[j+1].color = '#AA4643';
+                                 
+                                   // 异步比较元素
+                                   var r = $await(compareAsync(array[j].y, array[j + 1].y,30));
+                                   // 异步交换元素值
+                                   if (r > 0) $await(swapAsync(array, j, j + 1,50));
+                            
+                                   //更新图中数据显示
+                                   updateChartPoint(chart,array[j],j);
+                                   updateChartPoint(chart,array[j+1],j+1);
+                              }
+                              //最后一个元素
+                            if(end-i == 0){
+                                array[begin].color = '#AA4643';
+                                updateChartPoint(chart,array[begin],begin);
+                            }
+                    }    
+                   
+               }));
+             
+                    var bubbleSort = function(chart,array){
+                         return bubbleSortAsync(chart,array,0,array.length-1);
+                    }
+             
+               //选择排序
+               var selectSortAsync = eval(Wind.compile("async", function (chart,array) {
+                    for (var i = 0; i < array.length; i++) {
+                         //开始对第i位置排序,设置i为绿色
+                         array[i].color = '#89A54E';
+                         updateChartPoint(chart,array[i],i);
+                       
+                         for (var j = i+1; j < array.length; j++) {
+                       
+                              //设置当前比较元素的颜色 将j设置为红色,j-1还原位蓝色
+                              if(j!=i+1){
+                                   array[j-1].color = '#4572A7';
+                              }
+                              array[j].color = '#AA4643';
+                            
+                              // 异步比较元素
+                              var r = $await(compareAsync(array[i].y, array[j].y,30));
+                              // 异步交换元素值
+                              if (r > 0) {$await(swapAsync(array, i, j,50))
+                                   updateChartPoint(chart,array[i],i);
+                              };
+                              //更新图中数据显示
+                              updateChartPoint(chart,array[j-1],j-1);
+                              updateChartPoint(chart,array[j],j);
+                         }
+                       
+                         //一轮比较完毕,将i设置为红色，最后一个元素为蓝色
+                         array[array.length-1].color = '#4572A7';
+                         updateChartPoint(chart,array[array.length-1],array.length-1);
+                         array[i].color = '#AA4643';
+                         updateChartPoint(chart,array[i],i);
+                       
+                    }
+               }));
+             
+               //直接插入排序
+               var directInsertSortAsync = eval(Wind.compile("async", function (chart,array) {
+
+                    for (var i = 0; i < array.length-1; i++) {
+                              for(var j=i+1;j>0;j--){
+                                   // 异步比较元素
+                                   var r = $await(compareAsync(array[j-1].y, array[j].y,30));
+                                   // 异步交换元素值
+                                   if (r > 0) {
+                                        $await(swapAsync(array, j-1, j,50))
+                                        if(j-1==0){
+                                             array[j-1].color = '#AA4643';
+   
+                                        }else{
+                                             array[j-1].color = '#89A54E';
+                                        }
+                                        updateChartPoint(chart,array[j-1],j-1);
+                                        array[j].color = '#AA4643';
+                                        updateChartPoint(chart,array[j],j);
+                                 
+                                   }else{
+                                        array[j].color = '#AA4643';
+                                        updateChartPoint(chart,array[j],j);
+                                        //结束
+                                        break;
+                                   }
+                              }
+                    }
+               }));
+             
+             
+             
+               //二分插入排序
+               var binaryInsertSortAsync = eval(Wind.compile("async", function (chart,array) {
+                    for (var i = 0; i < array.length-1; i++) {
+                         //获取j插入的位置
+                         var j = i+1;
+                         var start = 0;
+                         var end = i;
+                         var pos = Math.floor((start+end)/2);
+                       
+                         //获取j在有序队列的位置pos
+                         while(true){
+                              array[pos].color = '#80699B';
+                              updateChartPoint(chart,array[pos],pos);
+                              var r = $await(compareAsync(array[j].y, array[pos].y,200));
+                              //j和pos相等
+                              if(r==0){
+                                   break;
+                              //j比r大
+                              }else if(r>0){
+                                   if(pos==end){ //j比end大
+                                        array[pos].color = '#AA4643';
+                                        updateChartPoint(chart,array[pos],pos);
+                                        pos = pos+1;
+                                        array[pos].color = '#80699B';
+                                        updateChartPoint(chart,array[pos],pos);
+                                        break;
+                                   }else{
+                                        start=pos+1;
+                                   }
+                              }else{
+                                   if(pos==start){ //j比start小
+                                        break;
+                                   }else{
+                                        end = pos-1;
+                                   }
+                              }
+                              array[pos].color = '#AA4643';
+                              updateChartPoint(chart,array[pos],pos);
+                              pos = Math.floor((start+end)/2);
+                         }
+                       
+                         //将j移动到pos的位置
+                         for(var index=j;index>pos;index--){
+                              $await(swapAsync(array, index, index-1,50))
+                              //开始对第i位置排序,设置i为绿色
+                              array[index-1].color = '#89A54E';
+                              array[index].color = '#AA4643';
+                              updateChartPoint(chart,array[index],index);
+                              updateChartPoint(chart,array[index-1],index-1);
+                         }
+                       
+                         array[pos].color = '#AA4643';
+                         updateChartPoint(chart,array[pos],pos);
+                    }
+               }));
+             
+               //希尔排序
+               var shellSortAsync = eval(Wind.compile("async", function (chart,array) {
+                    var gap = Math.floor((array.length)/2);
+                    var sortedcolor = '#AA4643'
+                    var colorNum = 0;
+                    while(gap>0){
+                         if(gap==1){
+                              sortedcolor = '#AA4643';
+                         }else{
+                              sortedcolor = tempColorList[colorNum];
+                         }
+                         for (var i = 0; i < gap; i++) {
+                              for(var index=i;index<array.length-1;index=index+gap){
+                                   for(var j=index+gap;j>i&&j<array.length;j=j-gap){
+                                        // 异步比较元素
+                                        var r = $await(compareAsync(array[j-gap].y, array[j].y,100));
+                                        // 异步交换元素值
+                                        if (r > 0) {
+                                             $await(swapAsync(array, j-gap, j,50))
+                                             if(j-gap==i){
+                                                  array[j-gap].color = sortedcolor;
+                                             }else{
+                                                  array[j-gap].color = '#89A54E';
+                                             }
+                                             updateChartPoint(chart,array[j-gap],j-gap);
+                                             array[j].color = sortedcolor;
+                                             updateChartPoint(chart,array[j],j);
+                                      
+                                        }else{
+                                             array[j-gap].color = sortedcolor;
+                                             updateChartPoint(chart,array[j-gap],j-gap);
+                                             array[j].color = sortedcolor;
+                                             updateChartPoint(chart,array[j],j);
+                                             //结束
+                                             break;
+                                        }
+                                   }
+                              }
+                         }
+                         colorNum++;
+                         if(colorNum==tempColorList.length){
+                              colorNum=0;
+                         }
+                         gap = Math.floor(gap/2);
+                    }
+               }));
+             
+             
+               //快速排序
+               //选择中位为比较目标，将比temp小得至于前，temp大的至于尾部，得到前后部分，分别比temp小和temp大，然后继续对这两部分排序
+               //当部分足够小的时候（5），采用选择排序（简单）             
+                var quickSortAsync = eval(Wind.compile("async", function (chart,array,begin,end) {
+                   
+                         var s = begin;
+                         var e = end;
+                         if(end-begin<0){
+                              return;
+                         }
+                    if(end-begin<=5){
+                              $await(bubbleSortAsync(chart,array,s,e));
+                    }else{
+                        var temp = begin;
+                        var head = begin+1;
+                        var tail = end;
+                              array[temp].color = '#89A54E';
+                              updateChartPoint(chart,array[temp],temp);
+                        while(true){
+                              while(head<tail){ //直到head大于temp
+                                   var r = $await(compareAsync(array[temp].y, array[head].y,50));
+                                   if(r>0){
+                                                  array[head].color = '#80699B';
+                                                  updateChartPoint(chart,array[head],head);
+                                        head++;
+                                   }else{
+                                        break;
+                                   }
+                              }
+                            
+                            while(tail>head){ //直到tail小于temp
+                                var r = $await(compareAsync(array[tail].y, array[temp].y,50));
+                                if(r>0){
+                                                array[tail].color = '#DB843D';
+                                             updateChartPoint(chart,array[tail],tail);
+                                    tail--;
+                                }else{
+                                    break;
+                                }
+                                 
+                            }
+                            if(tail==head){ //一轮比较结束，将temp和head或者head-1交换
+                                var r =  $await(compareAsync(array[temp].y, array[head].y,50));
+                                        array[temp].color = '#4572A7';
+                                        updateChartPoint(chart,array[temp],temp);
+                                if(r>0){
+                                    $await(swapAsync(array, head, temp,100));
+                                    updateChartPoint(chart,array[head],head);
+                                    updateChartPoint(chart,array[temp],temp);
+                                    temp = head;
+                                }else if(r<0){
+                                    $await(swapAsync(array, head-1, temp,100));
+                                    updateChartPoint(chart,array[head-1],head-1);
+                                    updateChartPoint(chart,array[temp],temp);
+                                    temp = head-1;
+                                }else{//相等
+                                    temp = head;
+                                }
+                                break;
+                                          
+                            }else{//此轮未结束，交换head和tail的值
+                                $await(swapAsync(array, head, tail,100));
+                                        array[head].color = '#80699B';
+                                        array[tail].color = '#DB843D';
+                                updateChartPoint(chart,array[head],head);
+                                updateChartPoint(chart,array[tail],tail);
+                                head++;
+                                if(head!=tail){
+                                    tail--;
+                                }
+                            }
+                       
+                        }
+                        array[temp].color = '#AA4643';
+                        updateChartPoint(chart,array[temp],temp);
+                              for(var i = temp+1 ;i<=end;i++){
+                                   array[i].color = '#4572A7';
+                                   updateChartPoint(chart,array[i],i);
+                              }
+                              for(var i = begin ;i<=temp-1;i++){
+                                   array[i].color = '#4572A7';
+                                   updateChartPoint(chart,array[i],i);
+                              }
+                              $await(Wind.Async.sleep(200));
+                        $await(quickSortAsync(chart,array,begin,temp-1));
+                        $await(quickSortAsync(chart,array,temp+1,end));
+                    }
+                                 
+               }));
+             
+                var quickSort = function(chart,array){
+                    return quickSortAsync(chart,array,0,array.length-1);
+                }
+             
+                //归并排序
+                    var mergeSortAsync = eval(Wind.compile("async", function (chart,array) {
+                         var range = 2;
+                         while(range<2*array.length){
+                              for(var i=0;i<array.length-1;){
+                                   var start = i;
+                                   var mid = i+(range/2);
+                                   var end = i+range-1;
+                                   if(end>array.length-1){
+                                        end = array.length-1;
+                                   }
+                                   $await(mergeAsync(chart,array,start,mid,end));
+                                   i=i+range;
+                              }
+                              range = 2*range;
+                         }
+                    }));
+              
+                   
+                    //合并操作
+                   var mergeAsync = eval(Wind.compile("async", function (chart,array,start,mid,end) {
+
+                         var temp = new Array(end-start+1);
+                         for(var i  = start;i<=end;i++){
+                              if(mid>end){
+                              array[i].color = '#AA4643';
+                              }else{
+                              array[i].color = '#89A54E';
+                              }
+                              updateChartPoint(chart,array[i],i);
+                              temp[i-start]=array[i].y;
+                         }
+                         if(end-start<0||mid>end){
+                              return;
+                         }
+                         $await(Wind.Async.sleep(200));
+                         var toSort = start;
+                         var first  = start;
+                         var second = mid;
+                         while(toSort<=end){
+                              var r = $await(compareAsync(temp[first-start], temp[second-start],100));
+                              if(r<=0){
+                                array[toSort].y = temp[first-start];
+                                array[toSort].color = '#AA4643';
+                                updateChartPoint(chart,array[toSort],toSort);
+                                first++;
+                                toSort++;
+                              }
+                              if(r>=0){
+                                   array[toSort].y = temp[second-start];
+                                   array[toSort].color = '#AA4643';
+                                   updateChartPoint(chart,array[toSort],toSort);
+                                  second++;
+                                  toSort++;
+                              }
+                             
+                              while(first==mid&&second<end+1){
+                                   array[toSort].y = temp[second-start];
+                                   array[toSort].color = '#AA4643';
+                                   updateChartPoint(chart,array[toSort],toSort);
+                                   $await(Wind.Async.sleep(20));
+                                  second++;
+                                  toSort++;
+                              }
+                             
+                              while(second==end+1&&first<mid){
+                                   array[toSort].y = temp[first-start];
+                                   array[toSort].color = '#AA4643';
+                                   updateChartPoint(chart,array[toSort],toSort);
+                                   $await(Wind.Async.sleep(20));
+                                  first++;
+                                  toSort++;
+                              }
+                         }
+                }));
+                   
+                   
+                                       
+                      //归并排序
+                    var localMergeSortAsync = eval(Wind.compile("async", function (chart,array) {
+                         var range = 2;
+                         while(range<2*array.length){
+                              for(var i=0;i<array.length-1;){
+                                   var start = i;
+                                   var mid = i+(range/2);
+                                   var end = i+range-1;
+                                   if(end>array.length-1){
+                                        end = array.length-1;
+                                   }
+                                   $await(mergeLocalAsync(chart,array,start,mid,end));
+                                   i=i+range;
+                              }
+                              $await(Wind.Async.sleep(100));
+                              range = 2*range;
+                         }
+                    }));
+                   
+                    //local merge的思想是ACE BD四段，将CE B段进行交换位置变成AB CED,再对CE D进行排序
+                    //分次反转排序 12345 234 先分别反转 54321 432 再反转234 12345
+                    //轮换 4567 123 ; 分两种情况（总数m，移动n 若m是n的整数倍，则会循环，此时需格位轮换）4替换7 7替换3 3替换6 6替换2 2替换5 5替换1,1替换4 结束
+                    //证明 m = k*n + L (L<n)
+                    //y*n = xm = x(k*n+L) = xk*n+xL
+                    //既 x = n时 y*n =n(k*n+L) y = k*n+L
+                    //y = m;
+                    //既替换m次后，轮换结束
+                   
+                    var mergeLocalAsync = eval(Wind.compile("async", function (chart,array,start,mid,end) {
+                         if(mid>end){
+                              return;
+                         }
+                        
+                         for(var i  = start;i<=end;i++){
+                              if(mid>end){
+                              array[i].color = '#AA4643';
+                              }else{
+                              array[i].color = '#89A54E';
+                              }
+                              updateChartPoint(chart,array[i],i);
+                         }
+                        
+                         var first = start;
+                         var second = mid;
+                         while(first<mid){//找到第一个first比mid大的
+                              var r = $await(compareAsync(array[first].y, array[second].y,30));
+                              if(r<=0){
+                                   array[first].color = '#AA4643';
+                                   updateChartPoint(chart,array[first],first);
+                                   first++;
+                              }else{
+                                   break;
+                              }
+                             
+                         }
+                         if(first<mid){
+                              while(second<=end){ //找到second的比此时first还小的
+                                   var r = $await(compareAsync(array[first].y, array[second].y,30));
+                                   if(r>=0){
+                                        second++;
+                                   }else{
+                                        break;
+                                   }
+                              }
+                              //此时start到first-1为最小序列，mid到second-1为第二小序列 first到mid-1和second到end未待合并序列
+                              //故需要将mid到second-1和first到mid-1交换位置
+                              //反转法
+                              if(mid-1-first>0){
+                                   $await(reverseAsync(chart,array,first,mid-1));
+                              }
+                              if(second-1-mid>0){
+                                   $await(reverseAsync(chart,array,mid,second-1));
+                              }
+                              $await(reverseAsync(chart,array,first,second-1));
+                              if(second<=end){
+                                   var nextStart = first+second-mid;
+                                   for(var i  = first;i<nextStart;i++){
+                                        array[i].color = '#AA4643';
+                                        updateChartPoint(chart,array[i],i);
+                                   }
+                                   $await(Wind.Async.sleep(100));
+                                   $await(mergeLocalAsync(chart,array,nextStart,second,end));
+                              }else{
+                                   for(var i  = first;i<=end;i++){
+                                        array[i].color = '#AA4643';
+                                        updateChartPoint(chart,array[i],i);
+                                   }
+                              }    
+                         }else{
+                                   for(var i  = mid;i<=end;i++){
+                                        array[i].color = '#AA4643';
+                                        updateChartPoint(chart,array[i],i);
+                                   }
+                         }
+                    }));
+                   
+                    var reverseAsync = eval(Wind.compile("async", function (chart,array,start,end) {
+                         for(var i  = start;i<=end;i++){
+                              array[i].color = '#80699B';
+                              updateChartPoint(chart,array[i],i);
+                         }
+                        
+                         var f = start;
+                         var s = end;
+                         while(f<s){
+                              $await(swapAsync(array,f,s,50))
+                              updateChartPoint(chart,array[f],f);
+                              updateChartPoint(chart,array[s],s);
+                              f++;
+                              s--;
+                         }
+                    }));
+
+                   
+                    //堆排序
+                    //一维数组表示堆，i结点的父结点下标就为(i – 1) / 2。它的左右子结点下标分别为2 * i + 1和2 * i + 2
+                   
+                    //在heap长度为length时添加一个元素
+                    var pushAsync = eval(Wind.compile("async",function(chart,array,length){
+                         var c = length; //子节点
+                         var f = Math.floor((c-1)/2);
+                         array[c].color = '#89A54E';
+                         updateChartPoint(chart,array[c],c);
+                         if(c==0){
+                              array[c].color = '#80699B';
+                              updateChartPoint(chart,array[c],c);
+                             return;
+                         }
+                         while(f>=0){
+                              array[f].color = '#DB843D';
+                              updateChartPoint(chart,array[f],f);
+                              var r = $await(compareAsync(array[f].y, array[c].y,20));
+                              if(r<0){//如果父节点比子节点小 则交换父子节点
+                                  $await(swapAsync(array, f, c,50));
+                                   if(f!=0){
+                                        array[f].color = '#89A54E';
+                                   }else{
+                                        array[f].color = '#80699B';
+                                   }
+                                   array[c].color = '#80699B';
+                                   updateChartPoint(chart,array[f],f);
+                                   updateChartPoint(chart,array[c],c);
+                                   //继续交换
+                                   c = f;
+                                   f = Math.floor((c-1)/2);
+                              }else{
+                                   array[f].color = '#80699B';
+                                   array[c].color = '#80699B';
+                                   updateChartPoint(chart,array[c],c);
+                                   updateChartPoint(chart,array[f],f);
+                                   break;
+                              }
+                         }
+                    }));
+                   
+                    //在heap长度为length时,出堆
+                    var popAsync = eval(Wind.compile("async",function(chart,array,length){
+                         if(length<=1){
+                              array[0].color = '#AA4643';
+                              updateChartPoint(chart,array[0],0);
+                         }
+                        
+                         if(length>1){
+                              $await(swapAsync(array,0,length-1,50));
+                              array[length-1].color = '#AA4643';
+                              updateChartPoint(chart,array[length-1],length-1);
+                              array[0].color = '#89A54E';
+                              updateChartPoint(chart,array[0],0);
+                              var root = 0;
+                              var left = 2*root+1;
+                              var right = 2*root + 2;
+                              while(left<=length-2){//左子节点在堆内
+                                   array[root].color = '#89A54E';
+                                   array[left].color = '#DB843D';
+                                   updateChartPoint(chart,array[root],root);
+                                   updateChartPoint(chart,array[left],left);
+                                   var cl = $await(compareAsync(array[root].y, array[left].y,20));
+                                   if(right>length-2){
+                                        if(cl<0){//右子节点已经不在堆内
+                                             $await(swapAsync(array, root, left,50));
+                                             array[root].color = '#80699B';
+                                             array[left].color = '#80699B';
+                                             updateChartPoint(chart,array[root],root);
+                                             updateChartPoint(chart,array[left],left);
+                                        }
+                                        break;
+                                   }
+                                   //和 子节点比较
+                                   array[right].color = '#DB843D';
+                                   updateChartPoint(chart,array[right],right);
+                                   var cr = $await(compareAsync(array[root].y, array[right].y,20));
+                                   if(cr<0||cl<0){ //比子节点小
+                                        if(cr>cl){ //右子树根更小
+                                             $await(swapAsync(array, root, left,50));
+                                             array[root].color = '#80699B';
+                                             updateChartPoint(chart,array[root],root);
+                                             root = left;
+                                        }else{
+                                             $await(swapAsync(array, root, right,50));
+                                             array[root].color = '#80699B';
+                                             updateChartPoint(chart,array[root],root);
+                                             root = right;
+                                        }
+                                        array[left].color = '#80699B';
+                                        array[right].color = '#80699B';
+                                        updateChartPoint(chart,array[left],left);
+                                        updateChartPoint(chart,array[right],right);
+                                        left = 2*root+1;
+                                        right = 2*root + 2;
+                                   }else{
+                                        array[root].color = '#80699B';
+                                        array[left].color = '#80699B';
+                                        array[right].color = '#80699B';
+                                        updateChartPoint(chart,array[root],root);
+                                        updateChartPoint(chart,array[left],left);
+                                        updateChartPoint(chart,array[right],right);
+                                        break;
+                                   }
+                              }
+                         }                        
+                    }));
+                               
+               var heapSortAsync = eval(Wind.compile("async", function (chart,array) {
+                        
+                         for(var i = 0;i<array.length;i++){
+                              $await(pushAsync(chart,array,i));
+                         }
+                        
+                         for(var i = 0;i<array.length;i++){
+                              $await(popAsync(chart,array,array.length-i));
+                         }
+                  }));
+                   
+
+                   
+               var dataList = createDataList();
+               //创建图
+               var chart = createChart(dataList, $("#sorttype").find("option:selected").text());
+               var funcTypeList = [bubbleSort,selectSortAsync,directInsertSortAsync,binaryInsertSortAsync,shellSortAsync,quickSort,mergeSortAsync,localMergeSortAsync,heapSortAsync];
+             
+               $("#startButton").click(function(){   
+                    var dataList = createDataList();
+                    var sortType = $("#sorttype").find("option:selected").text();
+                    //创建图
+                    var chart = createChart(dataList,sortType);   
+                    //排序，并更新图
+                    var func = funcTypeList[$("#sorttype").val()];
+                  
+                    func(chart,dataList).start();
+               });
+             
+               });
+                  
+          </script>
+        
+     </head>
+     <body>
+          <center>
+               <select id="sorttype">
+                 <option value ="0">冒泡排序</option>
+                 <option value ="1">选择排序</option>
+                 <option value="2">直接插入排序</option>
+                 <option value="3">二分插入排序</option>
+                 <option value="4">希尔排序</option>
+                 <option value="5">快速排序</option>
+                 <option value="6">归并排序</option>
+                 <option value="7">原地归并排序</option>
+                 <option value="8">堆排序</option>
+               </select>
+               <button id="startButton">开始</button>
+          </center>
+          <!-- 3. Add the container -->
+          <div id="container" style="width: 800px; height: 400px; margin: 0 auto"></div>
+     </body>
+</html>
